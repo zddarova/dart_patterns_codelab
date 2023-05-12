@@ -31,7 +31,8 @@ class DocumentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var (title, :modified) = document.getMetadata();
-    var blocks = document.getBlocks(); // New
+    var formattedModifiedDate = formatDate(modified); // New
+    var blocks = document.getBlocks();
 
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +41,7 @@ class DocumentScreen extends StatelessWidget {
       body: Column(
         children: [
           // New
-          Text('Last modified: $modified'),
+          Text('Last modified: $formattedModifiedDate'), // New
           Expanded(
             child: ListView.builder(
               itemCount: blocks.length,
@@ -90,4 +91,29 @@ class BlockWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+String formatDate(DateTime dateTime) {
+  var today = DateTime.now();
+  var difference = dateTime.difference(today);
+
+  // Each case of the switch expression is using an object pattern that matches
+  // by calling getters on the object's properties inDays and isNegative.
+  // The syntax looks like it might be constructing a Duration object,
+  // but it's actually accessing fields on the difference object.
+
+  // about when:
+  // If the guard clause evaluates to false, the entire pattern is refuted, and execution proceeds to the next case
+
+  return switch (difference) {
+    Duration(inDays: 0) => 'today',
+    Duration(inDays: 1) => 'tomorrow',
+    Duration(inDays: -1) => 'yesterday',
+    Duration(inDays: var days) when days > 7 => '${days ~/ 7} weeks from now', // New
+    Duration(inDays: var days)
+        when days < -7 =>
+      '${days.abs() ~/ 7} weeks ago', // New
+    Duration(inDays: var days, isNegative: true) => '${days.abs()} days ago',
+    Duration(inDays: var days) => '$days days from now',
+  };
 }
