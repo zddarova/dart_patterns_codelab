@@ -25,6 +25,14 @@ class Document {
     }
   }
 
+  List<Block> getBlocks() {
+    if (_json case {'blocks': List blocksJson}) {
+      return <Block>[for (var blockJson in blocksJson) Block.fromJson(blockJson)];
+    } else {
+      throw const FormatException('Unexpected JSON format');
+    }
+  }
+
 // The JSON contains the data structure you expect: if (_json.containsKey('metadata'))
 // The data has the type you expect: if (metadataJson is Map)
 // That the data is not null, which is implicitly confirmed in the previous check.
@@ -40,6 +48,21 @@ class Document {
 //   }
 //   throw const FormatException('Unexpected JSON');
 // }
+}
+
+class Block {
+  final String type;
+  final String text;
+
+  Block(this.type, this.text);
+
+  factory Block.fromJson(Map<String, dynamic> json) {
+    if (json case {'type': var type, 'text': var text}) {
+      return Block(type, text);
+    } else {
+      throw const FormatException('Unexpected JSON format');
+    }
+  }
 }
 
 const documentJson = '''
