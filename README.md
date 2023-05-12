@@ -1,3 +1,3 @@
 # patterns_codelab
 
-A new Flutter project.
+https://codelabs.developers.google.com/codelabs/dart-patterns-records#12
